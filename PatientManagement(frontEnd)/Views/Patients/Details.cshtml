@@ -1,0 +1,216 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using Boolean = PatientManagement_frontEnd_.Models.Boolean
+
+
+
+@section Styles
+{
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .form-div {
+            height: 800px;
+            width: 800px;
+            display: flex;
+            border: 1px solid black;
+            padding: 2%;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .NCDbox,
+        .boxwrap,
+        .flexdisplay {
+            width: 100%;
+            display: flex;
+            margin-top: 8px;
+            justify-content: space-between;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .box {
+            width: 250px;
+            height: 220px;
+            border: 1px solid black;
+            padding: 10px;
+            overflow-y: auto;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button {
+            margin: 5px;
+        }
+
+        .diplay-name {
+            width: 120px;
+            font-size: medium;
+            margin-right: 10px;
+            margin-top: 12px;
+        }
+
+        .diplay-name2 {
+            font-weight: bold;
+        }
+
+        .star {
+            color: red;
+        }
+
+        .inputdiv {
+            width: 80%;
+        }
+
+        input[type="text"],
+        .dropdown {
+            width: 100%;
+            padding: 6px 12px;
+            /* margin: 8px 0; */
+            box-sizing: border-box;
+        }
+
+        .selected {
+            background-color: rgb(105, 163, 248);
+        }
+
+        .centerbtn {
+            display: flex;
+            justify-content: center;
+        }
+
+        .savebtn {
+            background-color: #3bb8e9; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            border-radius: 4px;
+            margin-left: 110px;
+            margin-top: 20px;
+        }
+    </style>
+}
+
+@{
+    PatientView patientView = ViewBag.patient;
+    string? myEnum = Enum.GetName(typeof(Boolean), patientView.Epilepsy == false ? 0 : 1);
+    
+}
+
+<div class="form-div">
+    <div class="form">
+        <div class="flexdisplay">
+            <div class="diplay-name">
+                <label class="diplay-name2" for="name">Patient Name<span class="star">*</span></label>
+            </div>
+            <div class="inputdiv"><input type="text" id="name" value="@patientView.Name" /></div>
+        </div>
+        <div>
+            <div class="flexdisplay">
+                <div class="diplay-name">
+                    <label class="diplay-name2" for="disease">Diseases Name<span class="star">*</span></label>
+                </div>
+                <div class="inputdiv">
+                    <select class="dropdown" type="text" id="disease">
+                        <option value="Fiver">@patientView.Diseases</option>
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="flexdisplay">
+                <div class="diplay-name">
+                    <label for="epilepsy">Epilepsy<span class="star">*</span></label>
+                </div>
+                <div class="inputdiv">
+                    <select class="dropdown" type="text" id="epilepsy">
+                        <option selected="selected" value="@((int)Boolean.No))"> @myEnum</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="flexdisplay">
+            <div class="diplay-name">
+                <div>Other NDC</div>
+            </div>
+            <div class="container NCDbox inputdiv">
+                <div class="box" id="box1">
+                   
+                </div>
+
+                <div class="btn">
+                    <button disabled class="button" onclick="moveToBox2()">Add</button>
+                    <button disabled class="button" onclick="moveToBox1()">Remove</button>
+                </div>
+
+                <div class="box box2-elements" id="box2">
+                    @foreach (NcdDetailView data in ViewBag.ncd)
+                    {
+                        <p>@data.Ncd</p>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div class="flexdisplay">
+            <div class="diplay-name">
+                <div>Allergies<span class="star">*</span></div>
+            </div>
+            <div class="container NCDbox inputdiv">
+                <div class="box" id="box3">
+                  
+
+                </div>
+
+                <div class="btn">
+                    <button disabled class="button" onclick="moveToBox4()">Add</button>
+                    <button disabled class="button" onclick="moveToBox3()">Remove</button>
+                </div>
+
+                <div class="box" id="box4">
+                    @foreach (AllergiesDetailView data in ViewBag.allergies)
+                    {
+                        <p>@data.Allergies</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="flexdisplay centerbtn">
+           
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+   
+}

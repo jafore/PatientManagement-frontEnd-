@@ -1,0 +1,390 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using Boolean = PatientManagement_frontEnd_.Models.Boolean
+
+
+
+@section Styles
+{
+    <style>
+        *{
+           margin:0;
+           padding:0;
+        
+        }
+      body {
+        height: 100vh;
+        width: 100vw;
+      }
+    
+      .form-div {
+        height: 800px;
+        width: 800px;
+        display: flex;
+        border: 1px solid black;
+        padding: 2%;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+      }
+    
+      .NCDbox,
+      .boxwrap,
+      .flexdisplay {
+        width: 100%;
+        display: flex;
+        margin-top: 8px;
+        justify-content:space-between;
+      }
+    
+      .container {
+         display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    
+      .box {
+        width: 250px;
+        height: 220px;
+        border: 1px solid black;
+        padding: 10px;
+        overflow-y: auto;
+        cursor: pointer;
+      }
+    
+      .btn {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+      }
+    
+      .button {
+        margin: 5px;
+      }
+    
+      .diplay-name {
+        width: 120px;
+        font-size: medium;
+        margin-right: 10px;
+        margin-top: 12px;
+      }
+    
+      .diplay-name2 {
+        font-weight: bold;
+      }
+    
+      .star {
+        color: red;
+      }
+    
+      .inputdiv {
+        width: 80%;
+      }
+    
+      input[type="text"],
+      .dropdown {
+        width: 100%;
+        padding: 6px 12px;
+        /* margin: 8px 0; */
+        box-sizing: border-box;
+      }
+    
+      .selected {
+        background-color: rgb(105, 163, 248);
+      }
+      .centerbtn {
+        display: flex;
+        justify-content: center;
+      }
+      .savebtn {
+        background-color: #3bb8e9; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        border-radius: 4px;
+        margin-left: 110px;
+        margin-top: 20px;
+      }
+    </style>
+}
+
+<div class="form-div">
+    <div class="form">
+        <div class="flexdisplay">
+            <div class="diplay-name">
+                <label class="diplay-name2" for="name">Patient Name<span class="star">*</span></label>
+            </div>
+            <div class="inputdiv"><input type="text" id="name" /></div>
+        </div>
+        <div>
+            <div class="flexdisplay">
+                <div class="diplay-name">
+                    <label class="diplay-name2" for="disease">Diseases Name<span class="star">*</span></label>
+                </div>
+                <div class="inputdiv">
+                    <select class="dropdown" type="text" id="disease">
+                        <option value="Fiver">Select Disease</option>
+                       
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="flexdisplay">
+                <div class="diplay-name">
+                    <label for="epilepsy">Epilepsy<span class="star">*</span></label>
+                </div>
+                <div class="inputdiv">
+                    <select class="dropdown" type="text" id="epilepsy">
+                        <option value="@((int)Boolean.No))">@Boolean.No</option>
+                        <option value="@((int)Boolean.Yes))">@Boolean.Yes</option>
+                        </select>
+                </div>
+            </div>
+        </div>
+        <div class="flexdisplay">
+            <div class="diplay-name">
+                <div>Other NDC</div>
+            </div>
+            <div class="container NCDbox inputdiv">
+                <div class="box" id="box1">
+                    <p>Box 1 - Element 1</p>
+                </div>
+
+                <div class="btn">
+                    <button class="button" onclick="moveToBox2()">Add</button>
+                    <button class="button" onclick="moveToBox1()">Remove</button>
+                </div>
+
+                <div class="box box2-elements" id="box2"></div>
+            </div>
+        </div>
+
+        <div class="flexdisplay">
+            <div class="diplay-name">
+                <div>Allergies<span class="star">*</span></div>
+            </div>
+            <div class="container NCDbox inputdiv">
+                <div class="box" id="box3">
+                    <p>Box 3 - Element 1</p>
+                  
+                </div>
+
+                <div class="btn">
+                    <button class="button" onclick="moveToBox4()">Add</button>
+                    <button class="button" onclick="moveToBox3()">Remove</button>
+                </div>
+
+                <div class="box" id="box4"></div>
+            </div>
+        </div>
+        <div class="flexdisplay centerbtn">
+            <button class="savebtn" onclick="getValuesFromBox2()">Save</button>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script>
+        let baseUrl = `http://localhost:5021/api`;
+        // SendData(apiURL, data, Close);
+
+
+        var diseaseOption = document.getElementById("disease");
+        var box1 = document.getElementById("box1");
+        var box3 = document.getElementById("box3");
+
+
+        GetDataBox1(baseUrl + `/Ncds`)
+        async function GetDataBox1(apiURL) {
+
+            const response = await fetch(apiURL);
+            response
+                .json()
+                .then((res) => {
+                    var html = "";
+                    res.forEach(e => {
+                        html += `<p class="Ncdsdata" data-id1="${e.id}">${e.name}</p>`
+                        //console.log(e);
+                    })
+                    box1.innerHTML = html;
+                })
+                .catch((err) => {
+                    //error block
+                    console.log(err);
+                });
+        }
+
+        GetDataBox3(baseUrl + `/Allergies`)
+        async function GetDataBox3(apiURL) {
+
+            const response = await fetch(apiURL);
+            response
+                .json()
+                .then((res) => {
+                    var html = "";
+                    res.forEach(e => {
+                        html += `<p class="Allergies" data-id="${e.id}">${e.name}</p>`
+                       // console.log(e);
+                    })
+                    box3.innerHTML = html;
+                })
+                .catch((err) => {
+                    //error block
+                    console.log(err);
+                });
+        }
+
+        GetDatadisease(baseUrl + `/DiseaseInformation`)
+        async function GetDatadisease(apiURL) {
+
+            const response = await fetch(apiURL);
+            response
+                .json()
+                .then((res) => {
+                    var html = "";
+                    res.forEach(e => {
+                        html += `<option value="${e.id}">${e.name}</option>`
+                       // console.log(e);
+                    })
+                    diseaseOption.innerHTML = html;
+                })
+                .catch((err) => {
+                    //error block
+                    console.log(err);
+                });
+        }
+
+
+
+
+
+
+
+
+        window.onclick = function () { 
+        document.querySelectorAll(".box p").forEach((item) => {
+            item.addEventListener("click", (event) => {
+                event.target.classList.toggle("selected");
+            });
+        });
+        }
+
+
+        function moveToBox2() {
+            var selectedElements = document.querySelectorAll(".box#box1 .selected");
+            selectedElements.forEach(function (element) {
+                document.getElementById("box2").appendChild(element);
+                element.classList.remove("selected");
+            });
+        }
+
+        function moveToBox1() {
+            var selectedElements = document.querySelectorAll(".box#box2 .selected");
+            selectedElements.forEach(function (element) {
+                document.getElementById("box1").appendChild(element);
+                element.classList.remove("selected");
+            });
+        }
+
+        function moveToBox4() {
+            var selectedElements = document.querySelectorAll(".box#box3 .selected");
+            selectedElements.forEach(function (element) {
+                document.getElementById("box4").appendChild(element);
+                element.classList.remove("selected");
+            });
+        }
+
+        function moveToBox3() {
+            var selectedElements = document.querySelectorAll(".box#box4 .selected");
+            selectedElements.forEach(function (element) {
+                document.getElementById("box3").appendChild(element);
+                element.classList.remove("selected");
+            });
+        }
+
+        function getValuesFromBox2() {
+            var name = document.getElementById("name").value;
+            var disease = document.getElementById("disease").value;
+            var epilepsy = document.getElementById("epilepsy").value;
+
+            pushData("name", name);
+            pushData("disease", parseInt(disease));
+            pushData("epilepsy", parseInt(epilepsy));
+
+            var paragraphs = document.querySelectorAll(".box#box2 > .Ncdsdata");
+            var paragraphs2 = document.querySelectorAll(".box#box4 > .Allergies");
+           
+            paragraphs.forEach(function (paragraph) {
+                var dataId = paragraph.getAttribute("data-id1");
+                pushData("NCDs", parseInt(dataId));
+            }) 
+            
+            paragraphs2.forEach(function (paragraph) {
+                var dataId = paragraph.getAttribute("data-id");
+                pushData("Allergies", parseInt(dataId));
+            })
+
+          
+
+
+            //console.log(keyValuePairs);
+
+            
+            
+            var a = JSON.stringify(keyValuePairs)
+            console.log(a);
+
+           SendData(baseUrl + `/Patients/SaveDataForPatient`, keyValuePairs)
+        }
+
+        let keyValuePairs = {};
+        function pushData(key, value) {
+            if (keyValuePairs.hasOwnProperty(key)) {
+                keyValuePairs[key].push(value);
+            } else {
+                keyValuePairs[key] = [value];
+            }
+        }
+
+        
+        async function SendData(apiURL, data) {
+            //Step 1: send request
+            const response = await fetch(apiURL, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+            //Step 2: Response Request
+            response
+                .json()
+                .then((res) => {
+                    console.log(res);
+                    //document.getElementById("myForm").reset();
+                    alert("success");
+                    location.reload(true);
+                })
+                .catch((err) => {
+                    //error block
+                    console.log(err);
+                });
+        }
+
+
+
+       
+
+    </script>
+}

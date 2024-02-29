@@ -1,0 +1,122 @@
+﻿
+
+@{
+    ViewData["Title"] = "Patients";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+           Name
+        </th>
+        <th>
+           DiseasesId
+        </th>
+        <th>
+            Epilepsy
+        </th>
+        <th> Action</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+   
+    </tbody>
+</table>
+@section Scripts
+{
+    <script>
+        var tbody = document.getElementById("tbody");
+        let baseUrl = `http://localhost:5021/api`;
+        GetPatientData(baseUrl + `/Patients/GetPatients2`)
+        async function GetPatientData(apiURL) {
+
+            const response = await fetch(apiURL);
+            response
+                .json()
+                .then((res) => {
+                    var html = "";
+                    res.forEach(e => {
+                        html += `
+                   <tr>
+                    <td>
+                         ${e.name}
+                    </td>
+                    <td>
+                        ${e.diseases}
+                    </td>
+                    <td>
+                        ${e.epilepsy}
+                    </td>
+                    <td>
+                        <a href="/patients/Edit/${e.id}">Edit</a>|
+                        <a href="/patients/Details/${e.id}">Details</a>|
+                        <a onclick="deletedata(${e.id})" href="#">Delete</a>|
+                       
+                    </td>
+                </tr>    
+                   `
+                        
+                    })
+                   tbody.innerHTML = html;
+
+                    //tbody.appendChild = html;
+
+                   console.log(res);
+                })
+                .catch((err) => {
+                    //error block
+                    console.log(err);
+                });
+        }
+
+      
+       
+            async function deletedata(data) {
+
+
+            if (confirm("Are You Sure")) {
+               
+           
+
+
+
+            let apiURL = `http://localhost:5021/api/Patients/${data}`;
+                //Step 1: send request
+           // console.log(JSON.stringify({ "id": data }));
+                const response = await fetch(apiURL, {
+                    method: "Delete",
+                    headers: {
+                        "Content-type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify({"id": data }),
+                });
+                //Step 2: Response Request
+                response
+                    .json()
+                    .then((res) => {
+                        console.log(res);
+                        location.reload(true);
+                        //alert("success");
+                    })
+                    .catch((err) => {
+                        //error block
+                        console.log(err);
+                    });
+          
+        } else {
+            txt = "You pressed Cancel!";
+
+                alert(txt);
+        }
+        }
+
+       
+    </script>
+}
