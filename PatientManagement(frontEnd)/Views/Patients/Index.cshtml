@@ -6,9 +6,6 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
     <tr>
@@ -54,7 +51,6 @@
                         ${e.epilepsy}
                     </td>
                     <td>
-                        <a href="/patients/Edit/${e.id}">Edit</a>|
                         <a href="/patients/Details/${e.id}">Details</a>|
                         <a onclick="deletedata(${e.id})" href="#">Delete</a>|
                        
